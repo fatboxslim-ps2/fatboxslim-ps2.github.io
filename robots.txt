@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://fatboxslim-ps2.github.io/sitemap.xml

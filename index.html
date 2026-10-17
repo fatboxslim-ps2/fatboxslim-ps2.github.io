@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FatBoxSlim | Consolas PS2 Fat, Slim y DualShock en Argentina</title>
+  <meta name="description" content="Consolas PlayStation 2 Fat y Slim, controles DualShock y accesorios retro en Argentina. Conocé FatBoxSlim y consultá por WhatsApp.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <meta name="theme-color" content="#ececef">
+  <link rel="canonical" href="https://fatboxslim-ps2.github.io/">
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <link rel="stylesheet" href="style.css">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_AR">
+  <meta property="og:site_name" content="FatBoxSlim">
+  <meta property="og:title" content="FatBoxSlim | Consolas PS2 y accesorios">
+  <meta property="og:description" content="PS2 Fat, Slim y DualShock. Un rincón para seguir jugando. Consultanos por WhatsApp.">
+  <meta property="og:url" content="https://fatboxslim-ps2.github.io/">
+  <meta property="og:image" content="https://fatboxslim-ps2.github.io/assets/hero/poster.webp">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"FatBoxSlim","url":"https://fatboxslim-ps2.github.io/","inLanguage":"es-AR","description":"Catálogo de consolas PlayStation 2 Fat, Slim y accesorios retro en Argentina."}</script>
+  <script src="script.js" defer></script>
+</head>
+<body data-page="inicio">
+  <a class="skip-link" href="#contenido">Ir al contenido</a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="./" aria-label="FatBoxSlim - inicio">Fat<span>Box</span>Slim <span class="ps-dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span></a>
+      <nav class="main-nav" aria-label="Navegación principal">
+        <a href="#productos">Productos</a><a href="#contacto">Contacto</a>
+        <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Cambiar al tema oscuro" title="Cambiar tema">◐</button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="contenido">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-media" aria-hidden="true">
+        <video id="hero-video" class="hero-video" autoplay muted loop playsinline preload="none" poster="assets/hero/poster.webp"></video>
+        <div class="hero-mobile">
+          <img id="slide-base" src="./assets/hero/1.jpeg" alt="" width="720" height="1280" fetchpriority="high">
+          <img id="slide-top" src="./assets/hero/1.jpeg" alt="" width="720" height="1280" decoding="async">
+        </div>
+      </div>
+      <div class="hero-shade" aria-hidden="true"></div>
+      <div class="container hero-inner">
+        <p class="hero-eyebrow">FATBOXSLIM / RETRO GAMING</p>
+        <h1 id="hero-title"><span id="hero-titulo1">PS2</span><span class="hero-word" id="hero-titulo2">DUALSHOCK</span></h1>
+        <p class="hero-description" id="hero-description">Consolas PlayStation 2 Fat, Slim y accesorios para seguir jugando.</p>
+        <a class="button button-light" href="#productos">EXPLORAR PRODUCTOS <span aria-hidden="true">↓</span></a>
+        <p class="hero-footnote" aria-hidden="true">SONIDO OFF / SYSTEM ON</p>
+      </div>
+    </section>
+
+    <section id="productos" class="section products-section" aria-labelledby="products-title">
+      <div class="container">
+        <div class="section-heading">
+          <div><p class="eyebrow">COLECCIÓN / PS2</p><h2 id="products-title">PRODUCTOS<span class="heading-dot">.</span></h2></div>
+          <div class="section-controls"><span class="slide-hint">Deslizá para ver más →</span><button class="slide-arrow" id="products-prev" type="button" aria-label="Producto anterior">←</button><button class="slide-arrow" id="products-next" type="button" aria-label="Producto siguiente">→</button></div>
+        </div>
+        <div id="productos-lista" class="product-track" aria-label="Productos de FatBoxSlim">
+          <!-- El carrusel se crea leyendo productos.json. No hay que editar este HTML. -->
+          <p class="loading-message">Cargando productos…</p>
+        </div>
+        <div class="products-bottom"><button id="show-all" class="text-button" type="button" hidden>Ver todos los productos ↗</button></div>
+      </div>
+    </section>
+
+    <section id="contacto" class="section contact-section" aria-labelledby="contact-title">
+      <div class="container contact-inner">
+        <div><p class="eyebrow">CONTACTO / FATBOXSLIM</p><h2 id="contact-title">¿VOLVEMOS<br>A JUGAR?</h2><p>¿Querés consultar por una consola PlayStation 2, un DualShock o algún accesorio? Escribinos y coordinamos por WhatsApp.</p></div>
+        <div class="contact-actions"><a class="button button-dark" id="contact-whatsapp" href="#contacto" aria-disabled="true">CONSULTAR POR WHATSAPP ↗</a><p class="contact-hint" id="contact-hint">Configurá tu número en productos.json para activar el contacto.</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><div class="container footer-inner"><span>© <span id="year">2026</span> FatBoxSlim</span><span>PLAYSTATION 2 / ARGENTINA</span><a href="#contenido">VOLVER ARRIBA ↑</a></div></footer>
+</body>
+</html>

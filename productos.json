@@ -1,0 +1,40 @@
+{
+  "sitio": {
+    "whatsapp": "541169579149",
+    "moneda": "ARS"
+  },
+  "hero": {
+    "titulo1": "PS2",
+    "titulo2": "DUALSHOCK",
+    "subtitulo": "Consolas PlayStation 2 Fat, Slim y accesorios para seguir jugando.",
+    "videoDesktop": "assets/hero/desktop.mp4",
+    "videoYoutube": "https://youtu.be/hOXCWawCGHw",
+    "posterDesktop": "assets/hero/poster.webp",
+    "velocidadVideo": 3,
+    "imagenesMobile": [
+      "assets/hero/1.jpeg",
+      "assets/hero/2.jpeg",
+      "assets/hero/3.jpeg",
+      "assets/hero/4.jpeg",
+      "assets/hero/5.jpeg",
+      "assets/hero/6.jpeg"
+    ],
+    "intervaloMobileMs": 5000
+  },
+  "productos": [
+    {
+      "id": "playstation-2-slim",
+      "nombre": "PlayStation 2 Slim",
+      "descripcionCorta": "ps2 slim + 1 joystick + 1 memory card + 32gb",
+      "descripcion": "Consola PlayStation 2 Slim. Consultá por disponibilidad, estado real y accesorios incluidos. Fotografía ilustrativa: reemplazala por la de tu consola.",
+      "precio": 80000,
+      "disponible": true,
+      "destacado": true,
+      "visible": true,
+      "orden": 1,
+      "imagenes": [
+        "assets/productos/ps2.webp"
+      ]
+    }
+  ]
+}
