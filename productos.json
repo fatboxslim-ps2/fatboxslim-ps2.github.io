@@ -22,19 +22,61 @@
     "intervaloMobileMs": 5000
   },
   "productos": [
-    {
-      "id": "playstation-2-slim",
-      "nombre": "PlayStation 2 Slim",
-      "descripcionCorta": "ps2 slim + 1 joystick + 1 memory card + 32gb",
-      "descripcion": "Consola PlayStation 2 Slim. Consultá por disponibilidad, estado real y accesorios incluidos. Fotografía ilustrativa: reemplazala por la de tu consola.",
-      "precio": 80000,
-      "disponible": true,
-      "destacado": true,
-      "visible": true,
-      "orden": 1,
-      "imagenes": [
-        "assets/productos/ps2.webp"
-      ]
-    }
-  ]
+  {
+    "id": "playstation-2-slim-opl-av",
+    "nombre": "PlayStation 2 Slim OPL",
+    "descripcionCorta": "PS2 Slim + OPL + 1 joystick + 1 memory card + pendrive 32 GB + cable AV",
+    "descripcion": "Consola PlayStation 2 Slim preparada con OPL para cargar juegos desde USB. Incluye un joystick, una memory card, un pendrive de 32 GB con juegos y cable AV. Consultá por disponibilidad, estado real y accesorios incluidos. Fotografía ilustrativa: reemplazala por la de tu consola.",
+    "precio": 80000,
+    "disponible": true,
+    "destacado": true,
+    "visible": true,
+    "orden": 1,
+    "imagenes": [
+      "assets/productos/ps2.webp"
+    ]
+  },
+  {
+    "id": "playstation-2-slim-opl-hdmi",
+    "nombre": "PlayStation 2 Slim OPL + HDMI",
+    "descripcionCorta": "PS2 Slim + OPL + 1 joystick + 1 memory card + pendrive 32 GB + adaptador HDMI",
+    "descripcion": "Consola PlayStation 2 Slim preparada con OPL para cargar juegos desde USB. Incluye un joystick, una memory card, un pendrive de 32 GB con juegos y un adaptador HDMI para conectarla a televisores con entrada HDMI. Consultá por disponibilidad, estado real y accesorios incluidos. Fotografía ilustrativa: reemplazala por la de tu consola.",
+    "precio": 85000,
+    "disponible": true,
+    "destacado": false,
+    "visible": true,
+    "orden": 2,
+    "imagenes": [
+      "assets/productos/ps2.webp"
+    ]
+  },
+  {
+    "id": "playstation-2-slim-lector-opl-av",
+    "nombre": "PlayStation 2 Slim con lectora + OPL",
+    "descripcionCorta": "PS2 Slim con lectora funcional + OPL + 1 joystick + 1 memory card + pendrive 32 GB + cable AV",
+    "descripcion": "Consola PlayStation 2 Slim con lectora de discos funcional y OPL para cargar juegos desde USB. Incluye un joystick, una memory card, un pendrive de 32 GB con juegos y cable AV. Permite jugar tanto desde discos compatibles como desde USB. Consultá por disponibilidad, estado real y accesorios incluidos. Fotografía ilustrativa: reemplazala por la de tu consola.",
+    "precio": 100000,
+    "disponible": true,
+    "destacado": false,
+    "visible": true,
+    "orden": 3,
+    "imagenes": [
+      "assets/productos/ps2.webp"
+    ]
+  },
+  {
+    "id": "playstation-2-slim-lector-opl-hdmi",
+    "nombre": "PlayStation 2 Slim con lectora + OPL + HDMI",
+    "descripcionCorta": "PS2 Slim con lectora funcional + OPL + 1 joystick + 1 memory card + pendrive 32 GB + adaptador HDMI",
+    "descripcion": "Consola PlayStation 2 Slim con lectora de discos funcional y OPL para cargar juegos desde USB. Incluye un joystick, una memory card, un pendrive de 32 GB con juegos y un adaptador HDMI para conectarla a televisores con entrada HDMI. Permite jugar tanto desde discos compatibles como desde USB. Consultá por disponibilidad, estado real y accesorios incluidos. Fotografía ilustrativa: reemplazala por la de tu consola.",
+    "precio": 105000,
+    "disponible": true,
+    "destacado": false,
+    "visible": true,
+    "orden": 4,
+    "imagenes": [
+      "assets/productos/ps2.webp"
+    ]
+  }
+]
 }
