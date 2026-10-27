@@ -43,7 +43,7 @@
     "descripcion": "Consola PlayStation 2 Slim preparada con OPL para cargar juegos desde USB. Incluye un joystick, una memory card, un pendrive de 32 GB con juegos y un adaptador HDMI para conectarla a televisores con entrada HDMI. Consultá por disponibilidad, estado real y accesorios incluidos. Fotografía ilustrativa: reemplazala por la de tu consola.",
     "precio": 85000,
     "disponible": true,
-    "destacado": false,
+    "destacado": true,
     "visible": true,
     "orden": 2,
     "imagenes": [
@@ -57,7 +57,7 @@
     "descripcion": "Consola PlayStation 2 Slim con lectora de discos funcional y OPL para cargar juegos desde USB. Incluye un joystick, una memory card, un pendrive de 32 GB con juegos y cable AV. Permite jugar tanto desde discos compatibles como desde USB. Consultá por disponibilidad, estado real y accesorios incluidos. Fotografía ilustrativa: reemplazala por la de tu consola.",
     "precio": 100000,
     "disponible": true,
-    "destacado": false,
+    "destacado": true,
     "visible": true,
     "orden": 3,
     "imagenes": [
@@ -71,7 +71,7 @@
     "descripcion": "Consola PlayStation 2 Slim con lectora de discos funcional y OPL para cargar juegos desde USB. Incluye un joystick, una memory card, un pendrive de 32 GB con juegos y un adaptador HDMI para conectarla a televisores con entrada HDMI. Permite jugar tanto desde discos compatibles como desde USB. Consultá por disponibilidad, estado real y accesorios incluidos. Fotografía ilustrativa: reemplazala por la de tu consola.",
     "precio": 105000,
     "disponible": true,
-    "destacado": false,
+    "destacado": true,
     "visible": true,
     "orden": 4,
     "imagenes": [
