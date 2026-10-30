@@ -33,7 +33,7 @@
     "visible": true,
     "orden": 1,
     "imagenes": [
-      "assets/productos/ps2.webp"
+      "assets/productos/ps2-av-opl.jpeg"
     ]
   },
   {
@@ -47,7 +47,7 @@
     "visible": true,
     "orden": 2,
     "imagenes": [
-      "assets/productos/ps2.webp"
+      "assets/productos/ps2-hdmi-opl.jpeg"
     ]
   },
   {
@@ -61,7 +61,7 @@
     "visible": true,
     "orden": 3,
     "imagenes": [
-      "assets/productos/ps2.webp"
+      "assets/productos/ps2-av-opl-laser.jpeg"
     ]
   },
   {
@@ -75,7 +75,7 @@
     "visible": true,
     "orden": 4,
     "imagenes": [
-      "assets/productos/ps2.webp"
+      "assets/productos/ps2-hdmi-opl-laser.jpeg"
     ]
   }
 ]
