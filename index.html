@@ -75,11 +75,1711 @@
   </main>
 
   <footer class="site-footer"><div class="container footer-inner"><span>© <span id="year">2026</span> FatBoxSlim</span><span>PLAYSTATION 2 / ARGENTINA</span><a href="#contenido">VOLVER ARRIBA ↑</a></div></footer>
+      <div id="fatboxslim-chat"></div>
+  
   <script type="module" src="https://cdn.landbot.io/landbot-3/landbot-3.0.0.mjs"></script>
 <script type="module">
   var myLandbot = new Landbot.Livechat({
     configUrl: 'https://storage.googleapis.com/landbot.online/v3/H-3533201-HX67QH69DVJO316B/index.json',
   });
 </script>
+      <script>
+        /**
+         * FATBOXSLIM - CHATBOT
+         * Widget independiente para GitHub Pages
+         * HTML + CSS + JavaScript en un único archivo.
+         */
+
+        (() => {
+            "use strict";
+
+            // =========================================
+            // 1. CONFIGURACIÓN
+            // =========================================
+
+            const CONFIG = {
+                mountId: "fatboxslim-chat",
+
+                whatsappNumero: "541169579149", // Ej: "5491112345678"
+
+                botImagen: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6IXdlFGg8WKH03vrKeNsHx6Zgek_wW1DYpcb1AvONzg&s=10",
+
+                imagenesConexiones: {
+                    hdmi: "https://storage.googleapis.com/media.landbot.io/990663/channels/FAOKBYLQ235AQAZHSAC8F3WH5CRUB4LP.avif",
+                    av: "https://storage.googleapis.com/media.landbot.io/990663/channels/YT9AX0MFY7O6WWXFK5213WBJ05MI0DTP.jpeg"
+                },
+
+                colores: {
+                    fondoArriba: "#020B18",
+                    fondoAbajo: "#081D3D",
+                    boton: "#5689E6",
+                    burbuja: "#FFFFFF",
+                    texto: "#151515"
+                },
+
+                productos: {
+                    hdmi: {
+                        id: 1,
+                        nombre: "PlayStation 2 Slim OPL + HDMI",
+                        incluye: "PS2 Slim + OPL + 1 joystick + 1 memory card + pendrive 32 GB + adaptador HDMI",
+                        precio: 85000
+                    },
+
+                    av: {
+                        id: 2,
+                        nombre: "PlayStation 2 Slim OPL + AV",
+                        incluye: "PS2 Slim + OPL + 1 joystick + 1 memory card + pendrive 32 GB + cable AV",
+                        precio: 80000
+                    }
+                },
+
+                joystickExtra: 15000,
+
+                tiempos: {
+                    normal: 550,
+                    corto: 350,
+                    inicio: 250
+                }
+            };
+
+            // =========================================
+            // 2. UTILIDADES
+            // =========================================
+
+            const precioAR = (numero) =>
+                "$" + Number(numero).toLocaleString("es-AR");
+
+            function escapeHTML(valor) {
+                return String(valor).replace(/[&<>"']/g, (caracter) => {
+                    const entidades = {
+                        "&": "&amp;",
+                        "<": "&lt;",
+                        ">": "&gt;",
+                        '"': "&quot;",
+                        "'": "&#039;"
+                    };
+
+                    return entidades[caracter];
+                });
+            }
+
+            function buscarNumeroWhatsApp() {
+                const numeroConfigurado = String(
+                    CONFIG.whatsappNumero || ""
+                ).replace(/\D/g, "");
+
+                if (numeroConfigurado) {
+                    return numeroConfigurado;
+                }
+
+                // Busca automáticamente un número en los
+                // enlaces de WhatsApp existentes en la web.
+
+                const enlaces = document.querySelectorAll("a[href]");
+
+                for (const enlace of enlaces) {
+                    try {
+                        const url = new URL(enlace.href);
+                        const dominio = url.hostname.toLowerCase();
+
+                        if (
+                            dominio === "wa.me" ||
+                            dominio === "www.wa.me"
+                        ) {
+                            const match = url.pathname.match(
+                                /^\/(\d{10,15})/
+                            );
+
+                            if (match) return match[1];
+                        }
+
+                        if (
+                            dominio === "api.whatsapp.com" ||
+                            dominio === "web.whatsapp.com"
+                        ) {
+                            const telefono = (
+                                url.searchParams.get("phone") || ""
+                            ).replace(/\D/g, "");
+
+                            if (telefono) return telefono;
+                        }
+                    } catch (_) {
+                        // Ignorar enlaces que no sean URLs válidas.
+                    }
+                }
+
+                return "";
+            }
+
+            function generarURLWhatsApp(mensaje) {
+                const numero = buscarNumeroWhatsApp();
+
+                if (!numero) return null;
+
+                return (
+                    "https://wa.me/" +
+                    numero +
+                    "?text=" +
+                    encodeURIComponent(mensaje)
+                );
+            }
+
+            function abrirWhatsApp(url) {
+                if (!url) return;
+
+                const nuevaVentana = window.open(
+                    url,
+                    "_blank",
+                    "noopener,noreferrer"
+                );
+
+                // Algunos navegadores devuelven null
+                // cuando se utiliza noopener.
+                if (nuevaVentana) {
+                    nuevaVentana.opener = null;
+                }
+            }
+
+            // =========================================
+            // 3. CONSTRUCTOR DEL WIDGET
+            // =========================================
+
+            function inicializar() {
+                let mount = document.getElementById(CONFIG.mountId);
+
+                // Si no existe el div, se crea automáticamente.
+                if (!mount) {
+                    mount = document.createElement("div");
+                    mount.id = CONFIG.mountId;
+                    document.body.appendChild(mount);
+                }
+
+                // Evitar inicializaciones duplicadas.
+                if (mount.shadowRoot) return;
+
+                const shadow = mount.attachShadow({
+                    mode: "open"
+                });
+
+                // =====================================
+                // 4. CSS COMPLETO
+                // =====================================
+
+                const style = document.createElement("style");
+
+                style.textContent = `
+            :host {
+                --fbs-top: ${CONFIG.colores.fondoArriba};
+                --fbs-bottom: ${CONFIG.colores.fondoAbajo};
+                --fbs-blue: ${CONFIG.colores.boton};
+                --fbs-white: ${CONFIG.colores.burbuja};
+                --fbs-text: ${CONFIG.colores.texto};
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+            }
+
+            [hidden] {
+                display: none !important;
+            }
+
+            button {
+                font-family: inherit;
+            }
+
+            .fbs-launcher {
+                position: fixed;
+                right: 22px;
+                bottom: 22px;
+                z-index: 2147483000;
+
+                width: 64px;
+                height: 64px;
+
+                border-radius: 50%;
+                border: 0;
+
+                background: #FFFFFF;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                cursor: pointer;
+                padding: 11px;
+
+                box-shadow:
+                    0 4px 24px rgba(0, 0, 0, .22);
+
+                transition:
+                    transform .2s ease,
+                    box-shadow .2s ease;
+            }
+
+            .fbs-launcher:hover {
+                transform: scale(1.07);
+                box-shadow:
+                    0 7px 30px rgba(0, 0, 0, .28);
+            }
+
+            .fbs-launcher img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+                border-radius: 50%;
+            }
+
+            .fbs-launcher-fallback {
+                font-size: 30px;
+            }
+
+            .fbs-panel {
+                position: fixed;
+                right: 22px;
+                bottom: 20px;
+
+                width: 446px;
+                max-width: calc(100vw - 24px);
+
+                height: min(760px, calc(100vh - 40px));
+                height: min(760px, calc(100dvh - 40px));
+
+                z-index: 2147483001;
+
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+
+                background: linear-gradient(
+                    180deg,
+                    var(--fbs-top) 0%,
+                    var(--fbs-bottom) 100%
+                );
+
+                border: 1px solid rgba(255,255,255,.08);
+                border-radius: 8px;
+
+                box-shadow:
+                    0 10px 35px rgba(0,0,0,.3);
+
+                animation: fbs-appear .2s ease-out;
+            }
+
+            @keyframes fbs-appear {
+                from {
+                    opacity: 0;
+                    transform: translateY(10px) scale(.98);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
+                }
+            }
+
+            /* ENCABEZADO */
+
+            .fbs-header {
+                height: 59px;
+                min-height: 59px;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                background: rgba(9, 14, 27, .96);
+                border-bottom: 1px solid rgba(255,255,255,.04);
+
+                position: relative;
+                z-index: 3;
+            }
+
+            .fbs-restart {
+                border: 0;
+                background: transparent;
+
+                color: #FFFFFF;
+                font-size: 14px;
+                font-weight: 600;
+
+                padding: 13px 20px;
+
+                cursor: pointer;
+                border-radius: 7px;
+            }
+
+            .fbs-restart:hover {
+                background: rgba(255,255,255,.05);
+            }
+
+            .fbs-close {
+                position: absolute;
+                right: 9px;
+                top: 50%;
+                transform: translateY(-50%);
+
+                width: 42px;
+                height: 42px;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                background: transparent;
+                border: 0;
+
+                color: #FFFFFF;
+                font-size: 25px;
+                font-weight: 300;
+
+                cursor: pointer;
+            }
+
+            .fbs-close:hover {
+                color: #BFCBE0;
+            }
+
+            /* CONTENEDOR DE CONVERSACIÓN */
+
+            .fbs-transcript {
+                flex: 1;
+                min-height: 0;
+
+                padding: 22px 15px 18px;
+
+                overflow-y: auto;
+                overflow-x: hidden;
+
+                display: flex;
+                flex-direction: column;
+
+                gap: 18px;
+
+                overscroll-behavior: contain;
+                scrollbar-width: thin;
+                scrollbar-color:
+                    rgba(255,255,255,.4)
+                    transparent;
+            }
+
+            .fbs-transcript::-webkit-scrollbar {
+                width: 7px;
+            }
+
+            .fbs-transcript::-webkit-scrollbar-thumb {
+                background: rgba(255,255,255,.4);
+                border-radius: 20px;
+            }
+
+            .fbs-transcript::-webkit-scrollbar-track {
+                background: transparent;
+            }
+
+            /* MENSAJES */
+
+            .fbs-message-row {
+                width: 100%;
+                display: flex;
+                align-items: flex-end;
+                gap: 10px;
+            }
+
+            .fbs-message-row.bot {
+                justify-content: flex-start;
+            }
+
+            .fbs-message-row.user {
+                justify-content: flex-end;
+            }
+
+            .fbs-avatar {
+                width: 35px;
+                height: 35px;
+                min-width: 35px;
+
+                border-radius: 50%;
+
+                background: #FFFFFF;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                padding: 5px;
+                overflow: hidden;
+
+                font-size: 19px;
+                flex-shrink: 0;
+            }
+
+            .fbs-avatar img {
+                width: 100%;
+                height: 100%;
+                object-fit: contain;
+            }
+
+            .fbs-bubble {
+                max-width: calc(100% - 45px);
+
+                border-radius: 13px 13px 13px 3px;
+
+                padding: 17px 19px;
+
+                font-size: 15px;
+                font-weight: 400;
+                line-height: 1.5;
+
+                background: var(--fbs-white);
+                color: var(--fbs-text);
+
+                overflow-wrap: anywhere;
+
+                box-shadow:
+                    0 1px 2px rgba(0,0,0,.07);
+            }
+
+            .fbs-message-row.user .fbs-bubble {
+                background: var(--fbs-blue);
+                color: #FFFFFF;
+
+                max-width: 83%;
+                border-radius: 13px 13px 3px 13px;
+
+                font-weight: 500;
+            }
+
+            .fbs-bubble p {
+                margin: 0 0 15px;
+            }
+
+            .fbs-bubble p:last-child {
+                margin-bottom: 0;
+            }
+
+            .fbs-bubble strong {
+                font-weight: 700;
+            }
+
+            .fbs-bubble ul {
+                padding-left: 17px;
+                margin: 12px 0;
+            }
+
+            .fbs-bubble li {
+                margin-bottom: 13px;
+            }
+
+            .fbs-bubble li:last-child {
+                margin-bottom: 0;
+            }
+
+            /* BOTONES DE RESPUESTA */
+
+            .fbs-options {
+                width: 100%;
+
+                display: flex;
+                flex-direction: column;
+
+                gap: 3px;
+
+                animation: fbs-fade .2s ease;
+            }
+
+            .fbs-options-label {
+                color: rgba(255,255,255,.9);
+
+                font-size: 11px;
+                font-weight: 500;
+
+                margin-bottom: 8px;
+                letter-spacing: .2px;
+            }
+
+            .fbs-option {
+                width: 100%;
+                min-height: 54px;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                text-align: center;
+
+                border: 0;
+                border-radius: 0;
+
+                background: var(--fbs-blue);
+                color: #FFFFFF;
+
+                padding: 14px 14px;
+
+                font-size: 15px;
+                line-height: 1.35;
+                font-weight: 600;
+
+                cursor: pointer;
+
+                transition:
+                    background .15s ease,
+                    filter .15s ease;
+            }
+
+            .fbs-option:hover {
+                filter: brightness(1.09);
+            }
+
+            .fbs-option:active {
+                filter: brightness(.94);
+            }
+
+            .fbs-option:focus-visible,
+            .fbs-launcher:focus-visible,
+            .fbs-close:focus-visible,
+            .fbs-restart:focus-visible {
+                outline: 3px solid #FFFFFF;
+                outline-offset: 2px;
+            }
+
+            .fbs-option:first-of-type {
+                border-radius: 4px 4px 0 0;
+            }
+
+            .fbs-option:last-child {
+                border-radius: 0 0 4px 4px;
+            }
+
+            .fbs-option:only-of-type {
+                border-radius: 4px;
+            }
+
+            /* IMÁGENES DE CONEXIONES */
+
+            .fbs-connections {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+
+                gap: 9px;
+
+                margin-left: 45px;
+            }
+
+            .fbs-connection {
+                position: relative;
+
+                width: 194px;
+                max-width: 100%;
+
+                border-radius: 10px;
+                overflow: hidden;
+
+                background: rgba(255,255,255,.08);
+            }
+
+            .fbs-connection img {
+                display: block;
+
+                width: 100%;
+                height: 110px;
+
+                object-fit: cover;
+            }
+
+            .fbs-connection-label {
+                position: absolute;
+                left: 7px;
+                bottom: 7px;
+
+                color: #FFFFFF;
+                background: rgba(0,0,0,.65);
+
+                border-radius: 4px;
+                padding: 3px 7px;
+
+                font-size: 10px;
+                font-weight: 700;
+            }
+
+            /* INDICADOR DE ESCRITURA */
+
+            .fbs-typing {
+                display: flex;
+                gap: 5px;
+
+                align-items: center;
+                justify-content: center;
+
+                width: 65px;
+                min-height: 41px;
+            }
+
+            .fbs-dot {
+                width: 7px;
+                height: 7px;
+
+                border-radius: 50%;
+                background: #8895A8;
+
+                animation: fbs-dot-animation 1.2s infinite;
+            }
+
+            .fbs-dot:nth-child(2) {
+                animation-delay: .15s;
+            }
+
+            .fbs-dot:nth-child(3) {
+                animation-delay: .3s;
+            }
+
+            @keyframes fbs-dot-animation {
+                0%, 60%, 100% {
+                    opacity: .35;
+                    transform: translateY(0);
+                }
+
+                30% {
+                    opacity: 1;
+                    transform: translateY(-4px);
+                }
+            }
+
+            @keyframes fbs-fade {
+                from {
+                    opacity: 0;
+                    transform: translateY(5px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* PIE DEL CHAT */
+
+            .fbs-footer {
+                height: 38px;
+                min-height: 38px;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                background: transparent;
+
+                color: rgba(255,255,255,.5);
+
+                font-size: 10px;
+                font-weight: 700;
+                letter-spacing: 1.5px;
+
+                user-select: none;
+            }
+
+            /* MOBILE */
+
+            @media (max-width: 640px) {
+                .fbs-launcher {
+                    right: 16px;
+                    bottom: 16px;
+
+                    width: 60px;
+                    height: 60px;
+                }
+
+                .fbs-panel {
+                    width: calc(100vw - 16px);
+                    max-width: none;
+
+                    height: calc(100vh - 16px);
+                    height: calc(100dvh - 16px);
+
+                    right: 8px;
+                    bottom: 8px;
+
+                    border-radius: 10px;
+                }
+
+                .fbs-header {
+                    height: 58px;
+                    min-height: 58px;
+                }
+
+                .fbs-transcript {
+                    padding: 21px 16px 16px;
+                    gap: 18px;
+                }
+
+                .fbs-bubble {
+                    padding: 17px 19px;
+                    font-size: 15px;
+                    line-height: 1.5;
+                }
+
+                .fbs-option {
+                    min-height: 52px;
+                    font-size: 15px;
+                }
+
+                .fbs-avatar {
+                    width: 35px;
+                    height: 35px;
+                    min-width: 35px;
+                }
+            }
+
+            @media (max-width: 360px) {
+                .fbs-transcript {
+                    padding-left: 11px;
+                    padding-right: 11px;
+                }
+
+                .fbs-bubble {
+                    font-size: 14px;
+                    padding: 14px 15px;
+                }
+
+                .fbs-option {
+                    font-size: 14px;
+                }
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                *,
+                *::before,
+                *::after {
+                    animation-duration: .01ms !important;
+                    transition-duration: .01ms !important;
+                }
+            }
+        `;
+
+                shadow.appendChild(style);
+
+                // =====================================
+                // 5. HTML DEL WIDGET
+                // =====================================
+
+                const widget = document.createElement("div");
+
+                widget.innerHTML = `
+            <button
+                class="fbs-launcher"
+                type="button"
+                aria-label="Abrir asistente FatBoxSlim"
+                aria-expanded="false"
+            >
+                <img
+                    src="${escapeHTML(CONFIG.botImagen)}"
+                    alt=""
+                >
+                <span
+                    class="fbs-launcher-fallback"
+                    hidden
+                >🎮</span>
+            </button>
+
+            <section
+                class="fbs-panel"
+                role="dialog"
+                aria-label="Asistente FatBoxSlim"
+                hidden
+            >
+                <header class="fbs-header">
+                    <button
+                        class="fbs-restart"
+                        type="button"
+                    >
+                        Volver a inicio
+                    </button>
+
+                    <button
+                        class="fbs-close"
+                        type="button"
+                        aria-label="Cerrar chat"
+                    >
+                        &times;
+                    </button>
+                </header>
+
+                <div
+                    class="fbs-transcript"
+                    role="log"
+                    aria-live="polite"
+                    aria-relevant="additions"
+                ></div>
+
+                <footer class="fbs-footer">
+                    FATBOXSLIM · RETRO GAMING
+                </footer>
+            </section>
+        `;
+
+                shadow.appendChild(widget);
+
+                // =====================================
+                // 6. ELEMENTOS
+                // =====================================
+
+                const launcher = widget.querySelector(".fbs-launcher");
+                const panel = widget.querySelector(".fbs-panel");
+                const restartButton = widget.querySelector(".fbs-restart");
+                const closeButton = widget.querySelector(".fbs-close");
+                const transcript = widget.querySelector(".fbs-transcript");
+
+                const launcherImg = launcher.querySelector("img");
+                const launcherFallback = launcher.querySelector(
+                    ".fbs-launcher-fallback"
+                );
+
+                launcherImg.addEventListener("error", () => {
+                    launcherImg.hidden = true;
+                    launcherFallback.hidden = false;
+                });
+
+                // =====================================
+                // 7. ESTADO DE LA CONVERSACIÓN
+                // =====================================
+
+                const state = {
+                    abierto: false,
+                    iniciado: false,
+
+                    tipoTV: null,
+                    producto: null,
+                    cantidadJoysticks: 1,
+
+                    opcionesActuales: null,
+                    typingActual: null,
+                    timer: null,
+                    version: 0,
+
+                    bodyBloqueado: false,
+                    overflowAnterior: ""
+                };
+
+                // =====================================
+                // 8. FUNCIONES DE INTERFAZ
+                // =====================================
+
+                function scrollAbajo() {
+                    requestAnimationFrame(() => {
+                        transcript.scrollTop = transcript.scrollHeight;
+                    });
+                }
+
+                function crearAvatar() {
+                    const avatar = document.createElement("span");
+
+                    avatar.className = "fbs-avatar";
+
+                    const img = document.createElement("img");
+
+                    img.src = CONFIG.botImagen;
+                    img.alt = "";
+
+                    img.addEventListener("error", () => {
+                        img.remove();
+                        avatar.textContent = "🎮";
+                    });
+
+                    avatar.appendChild(img);
+
+                    return avatar;
+                }
+
+                function mensajeBot(html) {
+                    const row = document.createElement("div");
+
+                    row.className = "fbs-message-row bot";
+
+                    const bubble = document.createElement("div");
+
+                    bubble.className = "fbs-bubble";
+                    bubble.innerHTML = html;
+
+                    row.appendChild(crearAvatar());
+                    row.appendChild(bubble);
+
+                    transcript.appendChild(row);
+
+                    scrollAbajo();
+
+                    return row;
+                }
+
+                function mensajeUsuario(texto) {
+                    const row = document.createElement("div");
+
+                    row.className = "fbs-message-row user";
+
+                    const bubble = document.createElement("div");
+
+                    bubble.className = "fbs-bubble";
+                    bubble.textContent = texto;
+
+                    row.appendChild(bubble);
+                    transcript.appendChild(row);
+
+                    scrollAbajo();
+
+                    return row;
+                }
+
+                function crearTyping() {
+                    const row = document.createElement("div");
+
+                    row.className = "fbs-message-row bot";
+
+                    const bubble = document.createElement("div");
+
+                    bubble.className = "fbs-bubble fbs-typing";
+
+                    for (let i = 0; i < 3; i++) {
+                        const dot = document.createElement("span");
+                        dot.className = "fbs-dot";
+                        bubble.appendChild(dot);
+                    }
+
+                    row.appendChild(crearAvatar());
+                    row.appendChild(bubble);
+
+                    transcript.appendChild(row);
+                    scrollAbajo();
+
+                    return row;
+                }
+
+                function eliminarOpciones() {
+                    if (state.opcionesActuales) {
+                        state.opcionesActuales.remove();
+                        state.opcionesActuales = null;
+                    }
+                }
+
+                function cancelarPendientes() {
+                    state.version++;
+
+                    if (state.timer !== null) {
+                        clearTimeout(state.timer);
+                        state.timer = null;
+                    }
+
+                    if (state.typingActual) {
+                        state.typingActual.remove();
+                        state.typingActual = null;
+                    }
+                }
+
+                function mostrarOpciones(opciones) {
+                    eliminarOpciones();
+
+                    const wrapper = document.createElement("div");
+
+                    wrapper.className = "fbs-options";
+
+                    const label = document.createElement("div");
+
+                    label.className = "fbs-options-label";
+                    label.textContent = "CHOOSE AN OPTION";
+
+                    wrapper.appendChild(label);
+
+                    opciones.forEach((opcion) => {
+                        const boton = document.createElement("button");
+
+                        boton.type = "button";
+                        boton.className = "fbs-option";
+                        boton.textContent = opcion.texto;
+
+                        boton.addEventListener("click", () => {
+                            // Las opciones persistentes no desaparecen,
+                            // por ejemplo "Abrir WhatsApp".
+
+                            if (!opcion.persistente) {
+                                if (state.opcionesActuales !== wrapper) {
+                                    return;
+                                }
+
+                                eliminarOpciones();
+                                mensajeUsuario(opcion.texto);
+                            }
+
+                            if (typeof opcion.accion === "function") {
+                                opcion.accion();
+                            }
+                        });
+
+                        wrapper.appendChild(boton);
+                    });
+
+                    transcript.appendChild(wrapper);
+
+                    state.opcionesActuales = wrapper;
+
+                    scrollAbajo();
+                }
+
+                function mostrarImagenesConexiones() {
+                    const wrapper = document.createElement("div");
+
+                    wrapper.className = "fbs-connections";
+
+                    const imagenes = [{
+                            src: CONFIG.imagenesConexiones.hdmi,
+                            alt: "Ejemplo de entrada HDMI",
+                            nombre: "HDMI"
+                        },
+                        {
+                            src: CONFIG.imagenesConexiones.av,
+                            alt: "Ejemplo de conexiones AV RCA",
+                            nombre: "AV / RCA"
+                        }
+                    ];
+
+                    imagenes.forEach((imagen) => {
+                        if (!imagen.src) return;
+
+                        const card = document.createElement("div");
+
+                        card.className = "fbs-connection";
+
+                        const img = document.createElement("img");
+
+                        img.src = imagen.src;
+                        img.alt = imagen.alt;
+                        img.loading = "lazy";
+
+                        img.addEventListener("load", scrollAbajo);
+
+                        img.addEventListener("error", () => {
+                            card.remove();
+                        });
+
+                        const label = document.createElement("span");
+
+                        label.className = "fbs-connection-label";
+                        label.textContent = imagen.nombre;
+
+                        card.appendChild(img);
+                        card.appendChild(label);
+
+                        wrapper.appendChild(card);
+                    });
+
+                    transcript.appendChild(wrapper);
+
+                    scrollAbajo();
+                }
+
+                /**
+                 * Muestra una respuesta del bot con una breve
+                 * animación de escritura y después los botones.
+                 */
+                function responderBot(html, opciones = [], ajustes = {}) {
+                    eliminarOpciones();
+                    cancelarPendientes();
+
+                    const versionActual = state.version;
+
+                    state.typingActual = crearTyping();
+
+                    const espera =
+                        ajustes.espera ?? CONFIG.tiempos.normal;
+
+                    state.timer = setTimeout(() => {
+                        if (versionActual !== state.version) {
+                            return;
+                        }
+
+                        if (state.typingActual) {
+                            state.typingActual.remove();
+                            state.typingActual = null;
+                        }
+
+                        state.timer = null;
+
+                        mensajeBot(html);
+
+                        if (ajustes.imagenesConexiones) {
+                            mostrarImagenesConexiones();
+                        }
+
+                        if (opciones.length > 0) {
+                            mostrarOpciones(opciones);
+                        }
+
+                        scrollAbajo();
+                    }, espera);
+                }
+
+                // =====================================
+                // 9. CONTROL DE VENTANA
+                // =====================================
+
+                function bloquearScrollMobile() {
+                    const esMobile = window.matchMedia(
+                        "(max-width: 640px)"
+                    ).matches;
+
+                    if (
+                        state.abierto &&
+                        esMobile &&
+                        !state.bodyBloqueado
+                    ) {
+                        state.overflowAnterior = document.body.style.overflow;
+
+                        document.body.style.overflow = "hidden";
+                        state.bodyBloqueado = true;
+                    }
+
+                    if (
+                        (!state.abierto || !esMobile) &&
+                        state.bodyBloqueado
+                    ) {
+                        document.body.style.overflow =
+                            state.overflowAnterior;
+
+                        state.bodyBloqueado = false;
+                    }
+                }
+
+                function abrirChat() {
+                    state.abierto = true;
+
+                    launcher.hidden = true;
+                    panel.hidden = false;
+
+                    launcher.setAttribute("aria-expanded", "true");
+
+                    bloquearScrollMobile();
+
+                    if (!state.iniciado) {
+                        reiniciarChat();
+                    }
+
+                    closeButton.focus();
+
+                    scrollAbajo();
+                }
+
+                function cerrarChat() {
+                    state.abierto = false;
+
+                    panel.hidden = true;
+                    launcher.hidden = false;
+
+                    launcher.setAttribute("aria-expanded", "false");
+
+                    bloquearScrollMobile();
+
+                    launcher.focus();
+                }
+
+                function reiniciarChat() {
+                    eliminarOpciones();
+                    cancelarPendientes();
+
+                    transcript.replaceChildren();
+
+                    state.tipoTV = null;
+                    state.producto = null;
+                    state.cantidadJoysticks = 1;
+                    state.iniciado = true;
+
+                    mostrarInicio();
+                }
+
+                launcher.addEventListener("click", abrirChat);
+
+                closeButton.addEventListener("click", cerrarChat);
+
+                restartButton.addEventListener(
+                    "click",
+                    reiniciarChat
+                );
+
+                window.addEventListener(
+                    "resize",
+                    bloquearScrollMobile
+                );
+
+                shadow.addEventListener("keydown", (event) => {
+                    if (event.key === "Escape" && state.abierto) {
+                        cerrarChat();
+                    }
+                });
+
+                // =====================================
+                // 10. FLUJO - INICIO
+                // =====================================
+
+                function mostrarInicio() {
+                    responderBot(
+                        `
+                <p>
+                    ¡Hola! 👋 Bienvenid@ a
+                    <strong>FatBoxSlim.</strong>
+                </p>
+
+                <p>
+                    Te ayudo a elegir el equipo retro
+                    perfecto para tu TV o resolver tus
+                    dudas en un par de clics.
+                </p>
+
+                <p>¿Qué te gustaría hacer hoy?</p>
+                `,
+                        [{
+                                texto: "🎮 Asesoramiento guiado para elegir",
+                                accion: mostrarOPL
+                            },
+                            {
+                                texto: "💬 Hablar directo por WhatsApp",
+                                accion: () => finalizarEnWhatsApp()
+                            }
+                        ], {
+                            espera: CONFIG.tiempos.inicio
+                        }
+                    );
+                }
+
+                // =====================================
+                // 11. FLUJO - EXPLICACIÓN OPL
+                // =====================================
+
+                function mostrarOPL() {
+                    responderBot(
+                        `
+                <p>
+                    <strong>
+                        ¿Qué es OPL (Open PS2 Loader)? 🕹️
+                    </strong>
+                </p>
+
+                <p>
+                    Es el sistema que le permite a tu
+                    consola cargar y ejecutar juegos
+                    digitales desde un pendrive, disco
+                    rígido o red, según la configuración,
+                    <strong>
+                        sin necesidad de utilizar la
+                        lectora de discos.
+                    </strong>
+                </p>
+
+                <p>
+                    <strong>
+                        🚀 Principales ventajas de tener OPL:
+                    </strong>
+                </p>
+
+                <p>
+                    • <strong>Cero desgaste de lectora:</strong>
+                    Podés jugar sin utilizar discos físicos.
+                </p>
+
+                <p>
+                    • <strong>Biblioteca digital:</strong>
+                    Tenés tus juegos organizados en un mismo lugar.
+                </p>
+
+                <p>
+                    • <strong>Practicidad:</strong>
+                    No necesitás cambiar de DVD para elegir
+                    otro juego.
+                </p>
+
+                <p>
+                    • <strong>Guardado de partidas:</strong>
+                    Podés seguir utilizando tu memory card.
+                </p>
+
+                <p>
+                    • <strong>Personalizable:</strong>
+                    Permite mostrar carátulas, portadas y
+                    listas organizadas de tus juegos.
+                </p>
+
+                <p>
+                    La velocidad de carga y la compatibilidad
+                    dependen del juego y del medio utilizado.
+                </p>
+                `,
+                        [{
+                            texto: "✅ Entendido, continuar",
+                            accion: mostrarPreguntaTV
+                        }]
+                    );
+                }
+
+                // =====================================
+                // 12. FLUJO - TIPO DE TELEVISOR
+                // =====================================
+
+                function mostrarPreguntaTV() {
+                    responderBot(
+                        `
+                <p>
+                    ¡Buenísimo! Vamos a armar tu combo
+                    ideal en 2 pasos rápidos. 🕹️
+                </p>
+
+                <p>
+                    Primero, ¿qué conexiones tiene
+                    tu televisor o monitor?
+                </p>
+
+                <p><em>💡 Guía rápida:</em></p>
+
+                <p>
+                    • <strong>HDMI:</strong>
+                    El conector rectangular plano
+                    que usan las TV modernas.
+                </p>
+
+                <p>
+                    • <strong>AV (Audio/Video):</strong>
+                    Las entradas redondas de colores
+                    (amarillo, blanco y rojo),
+                    típicas de las TV de tubo (CRT)
+                    o modelos más antiguos.
+                </p>
+                `,
+                        [{
+                                texto: "📺 Tengo puerto HDMI",
+                                accion: () => seleccionarProducto("hdmi")
+                            },
+                            {
+                                texto: "📺 Tengo entradas AV (RCA de colores)",
+                                accion: () => seleccionarProducto("av")
+                            }
+                        ], {
+                            imagenesConexiones: true
+                        }
+                    );
+                }
+
+                // =====================================
+                // 13. FLUJO - RECOMENDACIÓN
+                // =====================================
+
+                function seleccionarProducto(tipo) {
+                    const producto = CONFIG.productos[tipo];
+
+                    if (!producto) {
+                        reiniciarChat();
+                        return;
+                    }
+
+                    state.tipoTV = tipo;
+                    state.producto = producto;
+                    state.cantidadJoysticks = 1;
+
+                    const precioBase = producto.precio;
+
+                    const precioDosJoysticks =
+                        precioBase + CONFIG.joystickExtra;
+
+                    responderBot(
+                        `
+                <p>
+                    ¡Listo! Según lo que me contaste,
+                    este es el modelo ideal para tu TV:
+                </p>
+
+                <p>
+                    🌟 <strong>
+                        ${escapeHTML(producto.nombre)}
+                    </strong>
+                </p>
+
+                <p>
+                    📌 <strong><em>Incluye:</em></strong>
+                    ${escapeHTML(producto.incluye)}
+                </p>
+
+                <p>
+                    💵 <strong>Precio:</strong>
+                    <strong>${precioAR(precioBase)}</strong>
+                </p>
+
+                <p>
+                    ➕ <strong>
+                        ¿Sumar un 2.º joystick?
+                    </strong>
+                </p>
+
+                <p>
+                    🕹️ Joystick extra por solo
+                    <strong>
+                        +${precioAR(CONFIG.joystickExtra)}
+                    </strong>
+                </p>
+
+                <p>
+                    Con 2 joysticks:
+                    <strong>
+                        ${precioAR(precioDosJoysticks)}
+                        (precio final)
+                    </strong>
+                </p>
+
+                <p>¿Qué te gustaría hacer?</p>
+                `,
+                        [{
+                                texto: "🚀 Avanzar con 1 Joystick",
+                                accion: () => seleccionarJoysticks(1)
+                            },
+                            {
+                                texto: "🎮 Avanzar con 2 Joysticks",
+                                accion: () => seleccionarJoysticks(2)
+                            },
+                            {
+                                texto: "💬 Consultar por WhatsApp",
+                                accion: () => finalizarEnWhatsApp(
+                                    producto,
+                                    1,
+                                    true
+                                )
+                            }
+                        ]
+                    );
+                }
+
+                // =====================================
+                // 14. LÓGICA DE PRECIO Y COMBO
+                // =====================================
+
+                function seleccionarJoysticks(cantidad) {
+                    if (!state.producto) {
+                        reiniciarChat();
+                        return;
+                    }
+
+                    state.cantidadJoysticks = cantidad;
+
+                    finalizarEnWhatsApp(
+                        state.producto,
+                        cantidad,
+                        false
+                    );
+                }
+
+                function calcularTotal(producto, cantidad) {
+                    return (
+                        producto.precio +
+                        (cantidad === 2 ? CONFIG.joystickExtra : 0)
+                    );
+                }
+
+                // =====================================
+                // 15. GENERACIÓN DEL MENSAJE
+                // =====================================
+
+                function construirMensajeWhatsApp(
+                    producto = null,
+                    cantidad = 1,
+                    consulta = false
+                ) {
+                    if (!producto) {
+                        return (
+                            "¡Hola! Vi la página de FatBoxSlim " +
+                            "y me gustaría consultar por una " +
+                            "PlayStation 2. ¿Me pueden asesorar?"
+                        );
+                    }
+
+                    const total = calcularTotal(
+                        producto,
+                        cantidad
+                    );
+
+                    const joysticks = cantidad === 1 ?
+                        "1 joystick" :
+                        "2 joysticks";
+
+                    if (consulta) {
+                        return (
+                            "¡Hola! Estoy viendo la " +
+                            producto.nombre +
+                            " en FatBoxSlim.\n\n" +
+                            "Precio publicado: " +
+                            precioAR(producto.precio) +
+                            ".\n\n" +
+                            "Quería consultar disponibilidad " +
+                            "y cómo realizar la compra."
+                        );
+                    }
+
+                    return (
+                        "¡Hola! Quiero consultar por este combo " +
+                        "que armé en FatBoxSlim:\n\n" +
+                        "Equipo: " + producto.nombre + "\n" +
+                        "Joysticks: " + joysticks + "\n" +
+                        "Precio final: " + precioAR(total) + "\n\n" +
+                        "¿Tienen disponibilidad? " +
+                        "¿Cómo puedo realizar la compra?"
+                    );
+                }
+
+                // =====================================
+                // 16. FLUJO - WHATSAPP
+                // =====================================
+
+                function finalizarEnWhatsApp(
+                    producto = null,
+                    cantidad = 1,
+                    consulta = false
+                ) {
+                    const mensaje = construirMensajeWhatsApp(
+                        producto,
+                        cantidad,
+                        consulta
+                    );
+
+                    const url = generarURLWhatsApp(mensaje);
+
+                    // La apertura ocurre directamente durante
+                    // el clic del usuario para evitar bloqueos
+                    // del navegador por ventanas emergentes.
+                    if (url) {
+                        abrirWhatsApp(url);
+                    }
+
+                    let resumen = "";
+
+                    if (producto && !consulta) {
+                        const total = calcularTotal(
+                            producto,
+                            cantidad
+                        );
+
+                        resumen = `
+                    <p>
+                        🎮 <strong>
+                            ${escapeHTML(producto.nombre)}
+                        </strong>
+                    </p>
+
+                    <p>
+                        🕹️ ${cantidad}
+                        ${cantidad === 1 ? "joystick" : "joysticks"}
+                    </p>
+
+                    <p>
+                        💵 <strong>
+                            Total: ${precioAR(total)}
+                        </strong>
+                    </p>
+                `;
+                    }
+
+                    if (producto && consulta) {
+                        resumen = `
+                    <p>
+                        🎮 <strong>
+                            ${escapeHTML(producto.nombre)}
+                        </strong>
+                    </p>
+
+                    <p>
+                        💵 Precio desde
+                        <strong>${precioAR(producto.precio)}</strong>
+                    </p>
+                `;
+                    }
+
+                    if (!url) {
+                        responderBot(
+                            `
+                    <p>
+                        ¡Ya tenemos tu consulta lista! 🎮
+                    </p>
+
+                    ${resumen}
+
+                    <p>
+                        Todavía falta configurar el número
+                        de WhatsApp en el bot para poder
+                        enviarla.
+                    </p>
+                    `,
+                            [{
+                                texto: "↩️ Volver a inicio",
+                                accion: reiniciarChat
+                            }], {
+                                espera: CONFIG.tiempos.corto
+                            }
+                        );
+
+                        console.warn(
+                            "[FatBoxSlim] Configurá CONFIG.whatsappNumero."
+                        );
+
+                        return;
+                    }
+
+                    responderBot(
+                        `
+                <p>
+                    <strong>¡Listo! 🚀</strong>
+                </p>
+
+                ${resumen}
+
+                <p>
+                    Te abrí WhatsApp con tu consulta
+                    preparada para enviar.
+                </p>
+
+                <p>
+                    Si no se abrió automáticamente,
+                    tocá el botón de abajo.
+                </p>
+
+                <p>
+                    ¡Gracias por elegir
+                    <strong>FatBoxSlim!</strong> 🎮
+                </p>
+                `,
+                        [{
+                                texto: "🔗 Abrir WhatsApp",
+                                persistente: true,
+                                accion: () => abrirWhatsApp(url)
+                            },
+                            {
+                                texto: "↩️ Volver a inicio",
+                                accion: reiniciarChat
+                            }
+                        ], {
+                            espera: CONFIG.tiempos.corto
+                        }
+                    );
+                }
+            }
+
+            // =========================================
+            // 17. INICIALIZACIÓN AUTOMÁTICA
+            // =========================================
+
+            if (document.readyState === "loading") {
+                document.addEventListener(
+                    "DOMContentLoaded",
+                    inicializar, {
+                        once: true
+                    }
+                );
+            } else {
+                inicializar();
+            }
+
+        })();
+    </script>
 </body>
 </html>
